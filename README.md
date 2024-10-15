@@ -37,3 +37,10 @@ and the properties of the task are:
 - the use of positional arugements in command line to accept user inputs.
 - the use of a JSON file to store the tasks in the current directory.
 - the JSON file should be created if it does not exist.
+
+
+**building the project**
+1. *init*ing the project by `exec` the command `go mod init <module-name>`
+2. **defining the command**:
+    to define the command that I need to type into my CLI inorder for the app to get called we need a `Go` package named `flag`, which provides a simple way to define command line flags and arguments.
+    in our case 
