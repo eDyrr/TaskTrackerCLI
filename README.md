@@ -44,3 +44,10 @@ and the properties of the task are:
 2. **defining the command**:
     to define the command that I need to type into my CLI inorder for the app to get called we need a `Go` package named `flag`, which provides a simple way to define command line flags and arguments.
     in our case 
+
+
+**the algorithm**:
+1. writing the input
+2. reading the input
+3. analysing the input
+4. calling the adequate function

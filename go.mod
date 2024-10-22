@@ -1,3 +1,3 @@
-module github.com/eDyrr/TaskTrackerCLI.git
+module github.com/eDyrr/TaskTrackerCLI
 
 go 1.23.1

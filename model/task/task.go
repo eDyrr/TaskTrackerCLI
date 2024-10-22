@@ -1,26 +1,126 @@
 package task
 
 import (
-	"fmt"
+	"encoding/json"
+	"io/ioutil"
 	"time"
 )
 
+type Status int
+
+const (
+	Done Status = iota
+	InProgress
+	ToDo
+	unknown
+)
+
+var StatusName = map[Status]string{
+	Done:       "done",
+	InProgress: "in progress",
+	ToDo:       "to do",
+	unknown:    "unknown",
+}
+
+func translate(s string) Status {
+	for status, value := range StatusName {
+		if value == s {
+			return status
+		}
+	}
+	return unknown
+}
+
 type Task struct {
-	id          int
-	description string
-	status      string
-	createdAt   time.Time
-	updatedAt   time.Time
+	Id          int
+	Description string
+	Status      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
-func Add(s *string) {
-	fmt.Print(s)
+func loadTasks() []Task {
+	var tasks []Task
+
+	fileContent, _ := ioutil.ReadFile("test.json")
+	json.Unmarshal(fileContent, &tasks)
+	return tasks
 }
 
-func update(s *string) {
-
+func saveTasks(tasks []Task) {
+	data, _ := json.MarshalIndent(tasks, "", "")
+	ioutil.WriteFile("test.json", data, 0644)
 }
 
-func delete(s *string) {
+func (task *Task) Add() {
+	tasks := loadTasks()
 
+	tasks = append(tasks, *task)
+
+	saveTasks(tasks)
+}
+
+func List() []Task {
+	return loadTasks()
+}
+
+func ListDone() []Task {
+	var doneTasks []Task
+
+	tasks := loadTasks()
+
+	for _, task := range tasks {
+		if task.Status == "done" {
+			doneTasks = append(doneTasks, task)
+		}
+	}
+
+	return doneTasks
+}
+
+func search(description string) Task {
+
+	tasks := loadTasks()
+
+	for _, task := range tasks {
+		if task.Description == description {
+			return task
+		}
+	}
+	return Task{}
+}
+
+func update(updated Task) {
+	tasks := loadTasks()
+	for _, task := range tasks {
+		if updated.Id == task.Id {
+			task = updated
+		}
+	}
+	saveTasks(tasks)
+}
+
+func updateStatus(description string, status string) {
+	task := search(description)
+	tasks := loadTasks()
+	task.Status = status
+
+	for _, value := range tasks {
+		if value.Id == task.Id {
+			value = task
+		}
+	}
+	saveTasks(tasks)
+}
+
+func (task *Task) UpdateStatus(status string) {
+	tasks := loadTasks()
+	task.Status = status
+
+	for _, value := range tasks {
+		if value.Id == task.Id {
+			value = *task
+		}
+	}
+	saveTasks(tasks)
 }
