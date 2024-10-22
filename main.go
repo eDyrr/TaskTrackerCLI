@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -70,7 +71,16 @@ var filter Filters
 // }
 
 type Settings struct {
-	ID int `json:id_count`
+	ID int `json:"id_count"`
+}
+
+func incrementIdCount() int {
+
+	settings := loadSettings("settings.json")
+	settings.ID++
+	saveSettings("settings.json", settings)
+
+	return settings.ID
 }
 
 func loadSettings(fileName string) Settings {
@@ -108,20 +118,40 @@ func saveSettings(filename string, settings Settings) {
 	}
 }
 
+func coordinator() {
+	Flag := flag.String("task", "", "command")
+	flag.Parse()
+	content := flag.Arg(0)
+	fmt.Println(*Flag)
+	fmt.Println(content)
+
+	t := new(task.Task)
+
+	input := translate(*Flag)
+	switch input {
+	case add:
+		t = &task.Task{
+			t.Id:          incrementIdCount(),
+			t.Description: content,
+			t.Status:      task.ToDo,
+			t.CreatedAt: ,
+		}
+
+		t.Add()
+	case delete:
+		//task.Delete()
+	case update:
+		//task.
+	case list:
+		task.List()
+	case mark_in_progress:
+		t.UpdateStatus("in progress")
+	case mark_done:
+		t.UpdateStatus("done")
+	}
+}
+
 func main() {
-
-	settingsFile := "settings.json"
-
-	settings := loadSettings(settingsFile)
-
-	settings.ID = 2
-
-	saveSettings(settingsFile, settings)
-	// Flag := flag.String("task", "", "command")
-	// flag.Parse()
-	// content := flag.Arg(0)
-	// fmt.Println(*Flag)
-	// fmt.Println(content)
 
 	t := task.Task{
 		Id:          2,
