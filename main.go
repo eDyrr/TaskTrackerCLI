@@ -18,6 +18,9 @@ const (
 	delete
 	update
 	list
+	list_done
+	list_in_progress
+	list_to_do
 	mark_in_progress
 	mark_done
 	unknown
@@ -28,6 +31,9 @@ var FlagName = map[Flag]string{
 	delete:           "delete",
 	update:           "update",
 	list:             "list",
+	list_done:        "list done",
+	list_in_progress: "list in progress",
+	list_to_do:       "list to do",
 	mark_in_progress: "mark in progress",
 	mark_done:        "mark done",
 	unknown:          "unknown",
@@ -131,10 +137,11 @@ func coordinator() {
 	switch input {
 	case add:
 		t = &task.Task{
-			t.Id:          incrementIdCount(),
-			t.Description: content,
-			t.Status:      task.ToDo,
-			t.CreatedAt: ,
+			Id:          incrementIdCount(),
+			Description: content,
+			Status:      "todo",
+			CreatedAt:   time.Now(),
+			UpdatedAt:   nil,
 		}
 
 		t.Add()
@@ -143,7 +150,13 @@ func coordinator() {
 	case update:
 		//task.
 	case list:
-		task.List()
+		task.List("")
+	case list_done:
+		task.List("done")
+	case list_in_progress:
+		task.List("in progress")
+	case list_to_do:
+		task.List("to do")
 	case mark_in_progress:
 		t.UpdateStatus("in progress")
 	case mark_done:
@@ -158,13 +171,13 @@ func main() {
 		Description: "some description",
 		Status:      task.StatusName[task.Done],
 		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+		UpdatedAt:   (*time.Time)(nil),
 	}
 
 	t.Add()
 	t.UpdateStatus("done")
 
-	tasks := task.List()
+	tasks := task.List("")
 
 	for _, task := range tasks {
 		fmt.Println(task)

@@ -36,7 +36,7 @@ type Task struct {
 	Description string
 	Status      string
 	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	UpdatedAt   *time.Time
 }
 
 func loadTasks() []Task {
@@ -60,22 +60,22 @@ func (task *Task) Add() {
 	saveTasks(tasks)
 }
 
-func List() []Task {
-	return loadTasks()
-}
+func List(filter string) []Task {
 
-func ListDone() []Task {
-	var doneTasks []Task
+	if filter == "" {
+		return loadTasks()
+	}
 
+	var result []Task
 	tasks := loadTasks()
 
 	for _, task := range tasks {
-		if task.Status == "done" {
-			doneTasks = append(doneTasks, task)
+		if task.Status == filter {
+			result = append(result, task)
 		}
 	}
 
-	return doneTasks
+	return result
 }
 
 func search(description string) Task {
