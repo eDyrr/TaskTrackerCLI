@@ -9,7 +9,11 @@ import (
 	"time"
 
 	"github.com/eDyrr/TaskTrackerCLI/model/task"
+	taskRepo "github.com/eDyrr/TaskTrackerCLI/model/taskrepo"
 )
+
+var repo taskRepo.TaskRepo
+var settings Settings
 
 type Flag int
 
@@ -82,9 +86,8 @@ type Settings struct {
 
 func incrementIdCount() int {
 
-	settings := loadSettings("settings.json")
+	settings = loadSettings("settings.json")
 	settings.ID++
-	saveSettings("settings.json", settings)
 
 	return settings.ID
 }
@@ -162,6 +165,14 @@ func coordinator() {
 	case mark_done:
 		t.UpdateStatus("done")
 	}
+}
+
+func startup() {
+
+}
+
+func terminate() {
+	saveSettings("settings.json", settings)
 }
 
 func main() {
