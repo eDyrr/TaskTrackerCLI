@@ -6,14 +6,27 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/eDyrr/TaskTrackerCLI/model/task"
-	taskRepo "github.com/eDyrr/TaskTrackerCLI/model/taskrepo"
+	taskRepo "github.com/eDyrr/TaskTrackerCLI/model/taskRepo"
 )
 
 var repo taskRepo.TaskRepo
 var settings Settings
+
+type arrayFlags []string
+
+func (a *arrayFlags) String() string {
+	return strings.Join(*a, ",")
+}
+
+func (a *arrayFlags) Set(value string) error {
+	*a = append(*a, value)
+	return nil
+}
 
 type Flag int
 
@@ -35,11 +48,11 @@ var FlagName = map[Flag]string{
 	delete:           "delete",
 	update:           "update",
 	list:             "list",
-	list_done:        "list done",
-	list_in_progress: "list in progress",
-	list_to_do:       "list to do",
-	mark_in_progress: "mark in progress",
-	mark_done:        "mark done",
+	list_done:        "list-done",
+	list_in_progress: "list-in-progress",
+	list_to_do:       "list-to-do",
+	mark_in_progress: "mark-in-progress",
+	mark_done:        "mark-done",
 	unknown:          "unknown",
 }
 
@@ -131,12 +144,17 @@ func coordinator() {
 	Flag := flag.String("task", "", "command")
 	flag.Parse()
 	content := flag.Arg(0)
-	fmt.Println(*Flag)
-	fmt.Println(content)
+	// fmt.Println(*Flag)
+	// fmt.Println(content)
 
 	t := new(task.Task)
 
 	input := translate(*Flag)
+	// fmt.Print(input)
+	id64, _ := strconv.ParseInt(content, 10, 0)
+	id := int(id64)
+	// id = 1
+	// fmt.Printf("id %d", id)
 	switch input {
 	case add:
 		t = &task.Task{
@@ -147,50 +165,60 @@ func coordinator() {
 			UpdatedAt:   nil,
 		}
 
-		t.Add()
+		repo.Add(t)
 	case delete:
-		//task.Delete()
+		repo.Delete(id)
 	case update:
-		//task.
+		repo.Update(id, content)
 	case list:
-		task.List("")
+		fmt.Print(repo.List(content))
 	case list_done:
-		task.List("done")
+		repo.List(content)
 	case list_in_progress:
-		task.List("in progress")
+		repo.List(content)
 	case list_to_do:
-		task.List("to do")
+		repo.List(content)
 	case mark_in_progress:
-		t.UpdateStatus("in progress")
+		repo.UpdateStatus("in progress", id)
 	case mark_done:
-		t.UpdateStatus("done")
+		repo.UpdateStatus("done", id)
+	case unknown:
 	}
 }
 
 func startup() {
-
+	settings = loadSettings("settings.json")
+	repo.LoadData()
 }
 
 func terminate() {
 	saveSettings("settings.json", settings)
+	repo.SaveData()
 }
 
 func main() {
 
-	t := task.Task{
-		Id:          2,
-		Description: "some description",
-		Status:      task.StatusName[task.Done],
-		CreatedAt:   time.Now(),
-		UpdatedAt:   (*time.Time)(nil),
-	}
+	startup()
+	coordinator()
+	terminate()
 
-	t.Add()
-	t.UpdateStatus("done")
+	// var tags arrayFlags
 
-	tasks := task.List("")
+	// flag.Var(&tags, "tag", "provide n tags")
 
-	for _, task := range tasks {
-		fmt.Println(task)
-	}
+	// flag.Parse()
+
+	// fmt.Println("Tags:", tags)
+
+	// t := task.Task{
+	// 	Id:          2,
+	// 	Description: "some description",
+	// 	Status:      task.StatusName[task.Done],
+	// 	CreatedAt:   time.Now(),
+	// 	UpdatedAt:   (*time.Time)(nil),
+	// }
+
+	// for _, task := range tasks {
+	// 	fmt.Println(task)
+	// }
 }

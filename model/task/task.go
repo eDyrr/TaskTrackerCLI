@@ -1,8 +1,6 @@
 package task
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"time"
 )
 
@@ -39,88 +37,88 @@ type Task struct {
 	UpdatedAt   *time.Time
 }
 
-func loadTasks() []Task {
-	var tasks []Task
+// func loadTasks() []Task {
+// 	var tasks []Task
 
-	fileContent, _ := ioutil.ReadFile("test.json")
-	json.Unmarshal(fileContent, &tasks)
-	return tasks
-}
+// 	fileContent, _ := ioutil.ReadFile("test.json")
+// 	json.Unmarshal(fileContent, &tasks)
+// 	return tasks
+// }
 
-func saveTasks(tasks []Task) {
-	data, _ := json.MarshalIndent(tasks, "", "")
-	ioutil.WriteFile("test.json", data, 0644)
-}
+// func saveTasks(tasks []Task) {
+// 	data, _ := json.MarshalIndent(tasks, "", "")
+// 	ioutil.WriteFile("test.json", data, 0644)
+// }
 
-func (task *Task) Add() {
-	tasks := loadTasks()
+// func (task *Task) Add() {
+// 	tasks := loadTasks()
 
-	tasks = append(tasks, *task)
+// 	tasks = append(tasks, *task)
 
-	saveTasks(tasks)
-}
+// 	saveTasks(tasks)
+// }
 
-func List(filter string) []Task {
+// func List(filter string) []Task {
 
-	if filter == "" {
-		return loadTasks()
-	}
+// 	if filter == "" {
+// 		return loadTasks()
+// 	}
 
-	var result []Task
-	tasks := loadTasks()
+// 	var result []Task
+// 	tasks := loadTasks()
 
-	for _, task := range tasks {
-		if task.Status == filter {
-			result = append(result, task)
-		}
-	}
+// 	for _, task := range tasks {
+// 		if task.Status == filter {
+// 			result = append(result, task)
+// 		}
+// 	}
 
-	return result
-}
+// 	return result
+// }
 
-func search(description string) Task {
+// func search(description string) Task {
 
-	tasks := loadTasks()
+// 	tasks := loadTasks()
 
-	for _, task := range tasks {
-		if task.Description == description {
-			return task
-		}
-	}
-	return Task{}
-}
+// 	for _, task := range tasks {
+// 		if task.Description == description {
+// 			return task
+// 		}
+// 	}
+// 	return Task{}
+// }
 
-func update(updated Task) {
-	tasks := loadTasks()
-	for _, task := range tasks {
-		if updated.Id == task.Id {
-			task = updated
-		}
-	}
-	saveTasks(tasks)
-}
+// func update(updated Task) {
+// 	tasks := loadTasks()
+// 	for _, task := range tasks {
+// 		if updated.Id == task.Id {
+// 			task = updated
+// 		}
+// 	}
+// 	saveTasks(tasks)
+// }
 
-func updateStatus(description string, status string) {
-	task := search(description)
-	tasks := loadTasks()
-	task.Status = status
+// func updateStatus(description string, status string) {
+// 	task := search(description)
+// 	tasks := loadTasks()
+// 	task.Status = status
 
-	for _, value := range tasks {
-		if value.Id == task.Id {
-			value = task
-		}
-	}
-	saveTasks(tasks)
-}
+// 	for _, value := range tasks {
+// 		if value.Id == task.Id {
+// 			value = task
+// 		}
+// 	}
+// 	saveTasks(tasks)
+// }
 
-func (task *Task) UpdateStatus(status string) {
-	tasks := loadTasks()
-	task.Status = status
+// func (task *Task) UpdateStatus(status string) {
+// 	tasks := loadTasks()
+// 	task.Status = status
 
-	for _, value := range tasks {
-		if value.Id == task.Id {
-			value = *task
-		}
-	}
-	saveTasks(tasks)
-}
+// 	for _, value := range tasks {
+// 		if value.Id == task.Id {
+// 			value = *task
+// 		}
+// 	}
+// 	saveTasks(tasks)
+// }

@@ -51,3 +51,9 @@ and the properties of the task are:
 2. reading the input
 3. analysing the input
 4. calling the adequate function
+
+
+**how the command will look like:**
+disclaimer: this is just the first version of the command
+./main -task=add "go meet joe at 7 pm"
+./main -task=list -filter=done
